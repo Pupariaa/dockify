@@ -1,8 +1,8 @@
 const Client = require('ssh2').Client;
 
 /**
- * Settings for configuring DockerManager.
- * @typedef {Object} DockerManagerSettings
+ * Settings for configuring Dockify SSH.
+ * @typedef {Object} DockifySettings
  * @property {string} sshHost - SSH host for connecting to Docker.
  * @property {number} sshPort - SSH port for connecting to Docker.
  * @property {string} sshUsername - SSH username for connecting to Docker.
@@ -10,10 +10,10 @@ const Client = require('ssh2').Client;
  */
 
 
-class DockerManager {
+class Dockify {
     /**
-     * Constructor for DockerManager.
-     * @param {DockerManagerSettings} sshSettings - SSH settings for connecting to Docker.
+     * Constructor for Dockify.
+     * @param {DockifySettings} sshSettings - SSH settings for connecting to Docker.
      * @throws {TypeError} Will throw an error if SSH parameters are not provided as an object.
      * @throws {Error} Will throw an error if SSH parameters are missing or invalid.
      */
@@ -345,4 +345,4 @@ class DockerManager {
     }
 }
 
-module.exports = DockerManager
+module.exports = Dockify
