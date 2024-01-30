@@ -200,66 +200,6 @@ class Dockify {
         };
     };
 
-    getFullId = (shortID) => {
-        if (typeof shortID !== 'string') {
-            throw new TypeError('The ID must be a string');
-        }
-        if (shortID.length !== 12) {
-            throw new TypeError('The ID must be a shortID (12 chars)');
-        }
-        return this.getFullID(shortID);
-    }
-
-    start(containerId, checkpoint = false, checkpoint_dir = false, attach = false, detach_keys = false, interactive = false) {
-        if (checkpoint) {
-            if (!checkpoint_dir) {
-                throw new Error('Fill in the checkpoint path, add the path in 3rd parameter');
-            }
-        }
-        if (checkpoint || checkpoint_dir) {
-            console.warn('Checkpoints are in experimental (deamon)')
-        }
-        return this.executeDockerCommand(`start
-        ${attach !== false ? ` --attach ${attach}` : ''}
-        ${checkpoint !== false ? ` --checkpoint ${checkpoint}` : ''}
-        ${checkpoint_dir !== false ? ` --checkpoint-dir ${checkpoint_dir}` : ''}
-        ${detach_keys !== false ? ` --detach-keys ${detach_keys}` : ''}
-        ${interactive !== false ? ` --interactive ${interactive}` : ''}`, containerId);
-    }
-
-    stop(containerId, delay = false) {
-        if (typeof delay !== 'boolean') {
-            if (typeof delay !== 'number') {
-                throw new Error('The "delay" argument must be a numeric integer')
-            }
-        }
-        return this.executeDockerCommand(`stop 
-        ${delay !== false ? ` --time ${delay}` : ''}`, containerId);
-    }
-
-    rename(containerId, newName) {
-        return this.executeDockerCommand(`rename
-        ${newName}`, containerId)
-    }
-
-    suspend(containerId) {
-        return this.executeDockerCommand('pause', containerId);
-    }
-
-    restart(containerId, delay = false) {
-        if (typeof delay !== 'boolean') {
-            if (typeof delay !== 'number') {
-                throw new TypeError('The "delay" argument must be a numeric integer')
-            }
-        }
-        return this.executeDockerCommand(`restart 
-        ${delay !== false ? ` --time ${delay}` : ''}`, containerId);
-    }
-
-    getInfos(containerId) {
-        return this.executeDockerCommand(`inspect`, containerId, null);
-    }
-
     delete(containerId, force = false, link = false, volume = false) {
         if (typeof force !== 'boolean') {
             throw new TypeError('The "Force" argument must be a Boolean')
@@ -300,6 +240,95 @@ class Dockify {
         }
         return this.executeDockerCommand('logs', containerId, null)
     }
+    getFullId = (shortID) => {
+        if (typeof shortID !== 'string') {
+            throw new TypeError('The ID must be a string');
+        }
+        if (shortID.length !== 12) {
+            throw new TypeError('The ID must be a shortID (12 chars)');
+        }
+        return this.getFullID(shortID);
+    }
+    start(containerId, checkpoint = false, checkpoint_dir = false, attach = false, detach_keys = false, interactive = false) {
+        if (checkpoint) {
+            if (!checkpoint_dir) {
+                throw new Error('Fill in the checkpoint path, add the path in 3rd parameter');
+            }
+        }
+        if (checkpoint || checkpoint_dir) {
+            console.warn('Checkpoints are in experimental (deamon)')
+        }
+        return this.executeDockerCommand(`start
+        ${attach !== false ? ` --attach` : ''}
+        ${checkpoint !== false ? ` --checkpoint ${checkpoint}` : ''}
+        ${checkpoint_dir !== false ? ` --checkpoint-dir ${checkpoint_dir}` : ''}
+        ${detach_keys !== false ? ` --detach-keys ${detach_keys}` : ''}
+        ${interactive !== false ? ` --interactive ${interactive}` : ''}`, containerId);
+    }
+    stop(containerId, delay = false) {
+        if (typeof delay !== 'boolean') {
+            if (typeof delay !== 'number') {
+                throw new Error('The "delay" argument must be a numeric integer')
+            }
+        }
+        return this.executeDockerCommand(`stop 
+        ${delay !== false ? ` --time ${delay}` : ''}`, containerId);
+    }
+    rename(containerId, newName) {
+        return this.executeDockerCommand(`rename
+        ${newName}`, containerId)
+    }
+    suspend(containerId) {
+        return this.executeDockerCommand('pause', containerId);
+    }
+    restart(containerId, delay = false) {
+        if (typeof delay !== 'boolean') {
+            if (typeof delay !== 'number') {
+                throw new TypeError('The "delay" argument must be a numeric integer')
+            }
+        }
+        return this.executeDockerCommand(`restart 
+        ${delay !== false ? ` --time ${delay}` : ''}`, containerId);
+    }
+    inspect(containerId) {
+        return this.executeDockerCommand(`inspect`, containerId, null);
+    }
+    Version(){
+
+    }
+    Info(){
+
+    }
+    Images(){
+
+    }
+    PSa(){
+
+    }
+    deleteImage(imageName){
+
+    }
+    build(path, callback){
+
+    }
+    networksLS(){
+
+    }
+    volumesLS(){
+
+    }
+    push(imageName){
+
+    }
+    prune(){
+
+    }
+    imagePrune(){
+
+    }
+    containerPrune(){
+
+    }
 
     /**
      * Creates a Docker container based on the provided settings.
@@ -311,24 +340,42 @@ class Dockify {
         if (typeof settings !== 'object') {
             throw new TypeError('The settings argument must be an object')
         }
+
+        let command; 
+
+
         const argument = [];
-        for (const [key, value] of Object.entries(settings)) {
-            if (value === true) {
-                argument.push(`--${key}`);
-            } else if (value !== false) {
-                if (Array.isArray(value)) {
-                    argument.push(...value.map(val => `--${key} ${val}`));
-                } else {
-                    argument.push(`--${key} ${value}`);
+        // for (const [key, value] of Object.entries(settings)) {
+        //     if (value === true) {
+        //         argument.push(`--${key}`);
+        //     } else if (value !== false) {
+        //         if (Array.isArray(value)) {
+        //             argument.push(...value.map(val => `--${key} ${val}`));
+        //         } else {
+        //             argument.push(`--${key} ${value}`);
+        //         }
+        //     } else {
+        //         argument.push(`--${key}`);
+        //     }
+        // }
+
+        for (param of array2){
+            const argumentName = param.name;
+            const isRequired = param.required;
+            const valueType = param.type;
+            const isValuye = param.value
+
+            if(settings.hasOwnProperty(argumentName)){
+                const paramValue = settings[argumentName]
+                if((!isValuye || paramValue !== undefined) && typeof paramValue === valueType){
+                    command += `--${argumentName} ${valueType}`
                 }
-            } else {
-                argument.push(`--${key}`);
             }
         }
-        return this.executeDockerCommand(`create ${argument.join(' ')}`, containerId)
+
+        return command
+        // return this.executeDockerCommand(`create ${argument.join(' ')}`, containerId)
     }
-
-
     /**
      * Executes a command inside a running Docker container.
      * @param {string} containerId - Docker container ID.
