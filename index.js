@@ -289,18 +289,24 @@ class Dockify {
         }
         return this.executeDockerCommand(`restart 
         ${delay !== false ? ` --time ${delay}` : ''}`, containerId);
-    }
+    } 
     inspect(containerId) {
         return this.executeDockerCommand(`inspect`, containerId, null);
     }
     Version(){
-
+        return this.executeDockerCommand(`version`, null);
     }
     Info(){
-
+        return this.executeDockerCommand(`info`, null);
     }
-    Images(){
-
+    Images(idOnly=false, allImages = false){
+        if(typeof idOnly !== 'boolean'){
+            throw new TypeError('The idOnly argument must be an boolean')
+        }
+        if(typeof allImages !== 'boolean'){
+            throw new TypeError('The allImages argument must be an boolean')
+        }
+        return this.executeDockerCommand(`images ${allImages !== false ? ` --all` : ''} --no-trunc ${idOnly !== false ? ` --quiet` : ''}`, null);
     }
     PSa(){
 
@@ -308,7 +314,7 @@ class Dockify {
     deleteImage(imageName){
 
     }
-    build(path, callback){
+    build(path,tag, settings, callback){
 
     }
     networksLS(){
@@ -327,6 +333,9 @@ class Dockify {
 
     }
     containerPrune(){
+
+    }
+    import(url){
 
     }
 
